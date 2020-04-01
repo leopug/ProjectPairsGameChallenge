@@ -68,18 +68,26 @@ class MainViewController: UIViewController {
                 buttoms[firstChoice!].isEnabled = false
                 buttoms[secondChoice!].isEnabled = false
                 
+                UIView.animate(withDuration: 3, delay: 0, options: [], animations: {
+                    [weak self] in
+                    guard let first = self?.firstChoice else { return }
+                    guard let second = self?.secondChoice else { return }
+                    self?.buttoms[first].alpha = 0
+                    self?.buttoms[second].alpha = 0
+                })
+                
                 cleanChoices()
                 
                 if (buttoms.allSatisfy { $0.isEnabled == false
                 }) {
-                    let ac = UIAlertController(title: "YOU ARE THE BEST!", message: "You finally completed the 100 days of Swift, CONGRATULATIONS BOOYYY!!!", preferredStyle: .alert)
+                    let ac = UIAlertController(title: "WE ARE THE CHAMPIOONNSSS!", message: "You finally completed the 100 days of Swift, CONGRATULATIONS BOOYYY!!!", preferredStyle: .alert)
                     ac.addAction(UIAlertAction(title: "YEAH!!!", style: .default))
                     present(ac,animated: true)
                 }
                 
             } else {
                 
-                DispatchQueue.main.asyncAfter(deadline: .now()+1.4) {
+                DispatchQueue.main.asyncAfter(deadline: .now()+1.2) {
                     [weak self] in
                     guard let first = self?.firstChoice else { return }
                     guard let second = self?.secondChoice else { return }
