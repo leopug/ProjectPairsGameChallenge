@@ -12,6 +12,7 @@
 		3F5EB8652434B0C30016B04D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5EB8642434B0C30016B04D /* ViewController.swift */; };
 		3F5EB86A2434B0C70016B04D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F5EB8692434B0C70016B04D /* Assets.xcassets */; };
 		3F5EB86D2434B0C70016B04D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F5EB86B2434B0C70016B04D /* LaunchScreen.storyboard */; };
+		3F5EB8752434DB890016B04D /* ScoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5EB8742434DB880016B04D /* ScoreViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		3F5EB8692434B0C70016B04D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3F5EB86C2434B0C70016B04D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3F5EB86E2434B0C70016B04D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3F5EB8742434DB880016B04D /* ScoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				3F5EB8602434B0C30016B04D /* AppDelegate.swift */,
 				3F5EB8622434B0C30016B04D /* SceneDelegate.swift */,
 				3F5EB8642434B0C30016B04D /* ViewController.swift */,
+				3F5EB8742434DB880016B04D /* ScoreViewModel.swift */,
 				3F5EB8692434B0C70016B04D /* Assets.xcassets */,
 				3F5EB86B2434B0C70016B04D /* LaunchScreen.storyboard */,
 				3F5EB86E2434B0C70016B04D /* Info.plist */,
@@ -137,6 +140,7 @@
 				3F5EB8652434B0C30016B04D /* ViewController.swift in Sources */,
 				3F5EB8612434B0C30016B04D /* AppDelegate.swift in Sources */,
 				3F5EB8632434B0C30016B04D /* SceneDelegate.swift in Sources */,
+				3F5EB8752434DB890016B04D /* ScoreViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

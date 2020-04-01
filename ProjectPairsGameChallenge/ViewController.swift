@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Combine
 
 class MainViewController: UIViewController {
     
@@ -15,10 +16,22 @@ class MainViewController: UIViewController {
     var firstChoice : Int? = nil
     var secondChoice : Int? = nil
     
+    var scoreLabel: UILabel!
+    var scoreLabelCancellable: AnyCancellable?
+    var viewModel = ScoreViewModel()
+
+    var score : Int! {
+        didSet {
+            scoreLabel.text = "\(viewModel.score) left to pair!"
+        }
+    }
+    
     var cardsImages = ["card1","card3","card1","card2","card2","card3"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
         
         view.backgroundColor = .red
         
@@ -30,6 +43,14 @@ class MainViewController: UIViewController {
             }
         }
         
+        scoreLabel = UILabel(frame: CGRect(x: 50, y: 600, width: 400, height: 200))
+        scoreLabel.font = UIFont(name: "Times new roman", size: 40)
+        
+        scoreLabelCancellable = viewModel.$score.receive(on: DispatchQueue.main).assign(to: \.score, on: self)
+        
+        view.addSubview(scoreLabel)
+        
+        score = viewModel.score
     }
     
     func createButtom(x: CGFloat, y: CGFloat){
@@ -59,11 +80,12 @@ class MainViewController: UIViewController {
         if firstChoice == nil {
             buttomFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
             firstChoice = sender.tag
-        } else if secondChoice == nil {
+        } else if secondChoice == nil && sender.tag != firstChoice!{
             buttomFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
             secondChoice = sender.tag
             
             if cardsImages[firstChoice!] == cardsImages[secondChoice!] {
+                viewModel.reduceScore()
                 
                 buttoms[firstChoice!].isEnabled = false
                 buttoms[secondChoice!].isEnabled = false
@@ -78,8 +100,7 @@ class MainViewController: UIViewController {
                 
                 cleanChoices()
                 
-                if (buttoms.allSatisfy { $0.isEnabled == false
-                }) {
+                if (viewModel.score == 0 ) {
                     let ac = UIAlertController(title: "WE ARE THE CHAMPIOONNSSS!", message: "You finally completed the 100 days of Swift, CONGRATULATIONS BOOYYY!!!", preferredStyle: .alert)
                     ac.addAction(UIAlertAction(title: "YEAH!!!", style: .default))
                     present(ac,animated: true)
