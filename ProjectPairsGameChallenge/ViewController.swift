@@ -31,7 +31,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .redo, target: self, action: #selector(resetGame))
         
         view.backgroundColor = .red
         
@@ -53,6 +53,31 @@ class MainViewController: UIViewController {
         score = viewModel.score
     }
     
+    @objc func resetGame() {
+      
+        cleanChoices()
+        cleanBoard()
+        cleanScore()
+        
+    }
+    
+    func cleanScore() {
+        viewModel.resetScore()
+    }
+    
+    func cleanBoard() {
+        
+        buttoms.shuffle()
+        for tag in 0..<buttoms.count {
+            let buttom = buttoms[tag]
+            buttom.alpha = 1
+            buttom.isEnabled = true
+            buttom.setImage(UIImage(named: "back"), for: .normal)
+            buttom.transform = .identity
+            buttom.tag = tag
+        }
+    }
+    
     func createButtom(x: CGFloat, y: CGFloat){
         
         let buttom = UIButton(frame: CGRect(x: x, y: y, width: 130, height: 130))
@@ -65,14 +90,56 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func buttomFlip(tag: Int, withImage imageName: String) {
-        let image = UIImage(named: imageName)
-        buttoms[tag].setImage(image, for: .normal)
+        buttoms[tag].setImage(UIImage(named: imageName), for: .normal)
         UIView.transition(with: buttoms[tag], duration: 0.4, options: .transitionFlipFromLeft, animations: nil, completion: nil)
     }
     
     fileprivate func cleanChoices() {
         firstChoice = nil
         secondChoice = nil
+    }
+    
+    fileprivate func isGameOver() -> Bool {
+        return viewModel.score == 0
+    }
+    
+    fileprivate func isGameEnded() {
+        if isGameOver()  {
+            let ac = UIAlertController(title: "WE ARE THE CHAMPIOONNSSS!", message: "You finally completed the 100 days of Swift, CONGRATULATIONS BOOYYY!!!", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "YEAH!!!", style: .default))
+            present(ac,animated: true)
+        }
+    }
+    
+    fileprivate func makePairsDisappear() {
+        buttoms[firstChoice!].isEnabled = false
+        buttoms[secondChoice!].isEnabled = false
+        
+        UIView.animate(withDuration: 3, delay: 0, options: [], animations: {
+            [weak self] in
+            guard let first = self?.firstChoice else { return }
+            guard let second = self?.secondChoice else { return }
+            self?.buttoms[first].alpha = 0
+            self?.buttoms[second].alpha = 0
+        })
+    }
+    
+    fileprivate func userSelectedEqualImages() -> Bool {
+        return cardsImages[firstChoice!] == cardsImages[secondChoice!]
+    }
+    
+    fileprivate func flipTwoCardsToBack() {
+        DispatchQueue.main.asyncAfter(deadline: .now()+1.2) {
+            [weak self] in
+            guard let first = self?.firstChoice else { return }
+            guard let second = self?.secondChoice else { return }
+            
+            self?.buttomFlip(tag: first, withImage: "back")
+            self?.buttomFlip(tag: second, withImage: "back")
+            
+            self?.cleanChoices()
+            
+        }
     }
     
     @objc func flipCard(sender: UIButton) {
@@ -84,41 +151,19 @@ class MainViewController: UIViewController {
             buttomFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
             secondChoice = sender.tag
             
-            if cardsImages[firstChoice!] == cardsImages[secondChoice!] {
+            if userSelectedEqualImages() {
+                
                 viewModel.reduceScore()
                 
-                buttoms[firstChoice!].isEnabled = false
-                buttoms[secondChoice!].isEnabled = false
-                
-                UIView.animate(withDuration: 3, delay: 0, options: [], animations: {
-                    [weak self] in
-                    guard let first = self?.firstChoice else { return }
-                    guard let second = self?.secondChoice else { return }
-                    self?.buttoms[first].alpha = 0
-                    self?.buttoms[second].alpha = 0
-                })
+                makePairsDisappear()
                 
                 cleanChoices()
                 
-                if (viewModel.score == 0 ) {
-                    let ac = UIAlertController(title: "WE ARE THE CHAMPIOONNSSS!", message: "You finally completed the 100 days of Swift, CONGRATULATIONS BOOYYY!!!", preferredStyle: .alert)
-                    ac.addAction(UIAlertAction(title: "YEAH!!!", style: .default))
-                    present(ac,animated: true)
-                }
+                isGameEnded()
                 
             } else {
                 
-                DispatchQueue.main.asyncAfter(deadline: .now()+1.2) {
-                    [weak self] in
-                    guard let first = self?.firstChoice else { return }
-                    guard let second = self?.secondChoice else { return }
-                    
-                    self?.buttomFlip(tag: first, withImage: "back")
-                    self?.buttomFlip(tag: second, withImage: "back")
-                    
-                    self?.cleanChoices()
-                    
-                }
+                flipTwoCardsToBack()
             }
         }
     }

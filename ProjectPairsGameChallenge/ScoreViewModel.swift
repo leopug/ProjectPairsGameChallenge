@@ -9,8 +9,10 @@
 import Foundation
 import Combine
 
+
+
 class ScoreViewModel {
-        
+    
     @Published var score: Int = 6
     var cancellable: AnyCancellable?
 
@@ -18,6 +20,8 @@ class ScoreViewModel {
         score-=2
     }
 
-    
+    func resetScore() {
+        score = 6
+    }
     
 }
