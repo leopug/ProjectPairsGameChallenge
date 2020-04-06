@@ -19,7 +19,7 @@ class MainViewController: UIViewController {
     var scoreLabel: UILabel!
     var scoreLabelCancellable: AnyCancellable?
     var viewModel = ScoreViewModel()
-
+    
     var score : Int! {
         didSet {
             scoreLabel.text = "\(viewModel.score) left to pair!"
@@ -54,7 +54,7 @@ class MainViewController: UIViewController {
     }
     
     @objc func resetGame() {
-      
+        
         cleanChoices()
         cleanBoard()
         cleanScore()
@@ -68,6 +68,7 @@ class MainViewController: UIViewController {
     func cleanBoard() {
         
         buttoms.shuffle()
+        
         for tag in 0..<buttoms.count {
             let buttom = buttoms[tag]
             buttom.alpha = 1
@@ -82,14 +83,14 @@ class MainViewController: UIViewController {
         
         let buttom = UIButton(frame: CGRect(x: x, y: y, width: 130, height: 130))
         buttom.setImage(UIImage(named: "back"), for: .normal)
-        buttom.addTarget(self, action: #selector(flipCard), for: .touchUpInside)
+        buttom.addTarget(self, action: #selector(cardSelected), for: .touchUpInside)
         buttom.tag = tagControl
         view.addSubview(buttom)
         buttoms.append(buttom)
         tagControl+=1
     }
     
-    fileprivate func buttomFlip(tag: Int, withImage imageName: String) {
+    fileprivate func cardFlip(tag: Int, withImage imageName: String) {
         buttoms[tag].setImage(UIImage(named: imageName), for: .normal)
         UIView.transition(with: buttoms[tag], duration: 0.4, options: .transitionFlipFromLeft, animations: nil, completion: nil)
     }
@@ -134,35 +135,40 @@ class MainViewController: UIViewController {
             guard let first = self?.firstChoice else { return }
             guard let second = self?.secondChoice else { return }
             
-            self?.buttomFlip(tag: first, withImage: "back")
-            self?.buttomFlip(tag: second, withImage: "back")
+            self?.cardFlip(tag: first, withImage: "back")
+            self?.cardFlip(tag: second, withImage: "back")
             
             self?.cleanChoices()
             
         }
     }
     
-    @objc func flipCard(sender: UIButton) {
+    fileprivate func isFirstCard() -> Bool {
+        return firstChoice == nil
+    }
+    
+    fileprivate func isSecondCard(_ sender: UIButton) -> Bool {
+        return secondChoice == nil && sender.tag != firstChoice!
+    }
+    
+    @objc func cardSelected(sender: UIButton) {
         
-        if firstChoice == nil {
-            buttomFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
+        if isFirstCard() {
+            cardFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
             firstChoice = sender.tag
-        } else if secondChoice == nil && sender.tag != firstChoice!{
-            buttomFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
+            
+        } else if isSecondCard(sender){
+            cardFlip(tag: sender.tag, withImage: cardsImages[sender.tag])
             secondChoice = sender.tag
             
             if userSelectedEqualImages() {
                 
                 viewModel.reduceScore()
-                
                 makePairsDisappear()
-                
                 cleanChoices()
-                
                 isGameEnded()
                 
             } else {
-                
                 flipTwoCardsToBack()
             }
         }
